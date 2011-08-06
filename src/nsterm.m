@@ -1266,8 +1266,10 @@ x_set_window_size (struct frame *f, int change_grav, int cols, int rows)
 
   f->scroll_bar_actual_width = NS_SCROLL_BAR_WIDTH (f);
   compute_fringe_widths (f, 0);
+  
+  BOOL inFullScreen = ([window styleMask] & NSFullScreenWindowMask) == NSFullScreenWindowMask;
 
-  if ([window isKindOfClass:[EmacsFullWindow class]]) {
+  if ([window isKindOfClass:[EmacsFullWindow class]] || inFullScreen) {
       pixelwidth = [[window screen] frame].size.width;
       pixelheight = [[window screen] frame].size.height;
   }
@@ -5536,6 +5538,11 @@ ns_term_shutdown (int sig)
     [win setOpaque: NO];
 
   [self allocateGState];
+  
+  NSApplicationPresentationOptions options = [[NSApplication sharedApplication] currentSystemPresentationOptions];
+  [[NSApplication sharedApplication] setPresentationOptions:options | NSApplicationPresentationFullScreen];
+  
+  [win setCollectionBehavior:[win collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
 
   [NSApp registerServicesMenuSendTypes: ns_send_types
                            returnTypes: nil];
