@@ -929,6 +929,11 @@ See the documentation of `create-fontset-from-fontset-spec' for the format.")
 (add-to-list 'window-system-initialization-alist '(ns . ns-initialize-window-system))
 
 
+(declare-function ns-toggle-fullscreen-internal "nsfns.m" ())
+(defun ns-toggle-fullscreen ()
+  (interactive)
+  (ns-toggle-fullscreen-internal))
+
 (provide 'ns-win)
 
 ;;; ns-win.el ends here
